@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Livre index{% endblock %}
+{% block title %}Livre index
+{% endblock %}
 
 {% block body %}
     <h1>Livre index</h1>
@@ -19,25 +20,48 @@
             </tr>
         </thead>
         <tbody>
-        {% for livre in livres %}
-            <tr>
-                <td>{{ livre.id }}</td>
-                <td>{{ livre.titre }}</td>
-                <td>{{ livre.auteur }}</td>
-                <td>{{ livre.editeur }}</td>
-                <td>{{ livre.dateParution ? livre.dateParution|date('Y-m-d') : '' }}</td>
-                <td>{{ livre.disponibilite ? 'Yes' : 'No' }}</td>
-                <td>{{ livre.iban }}</td>
-                <td>
-                    <a href="{{ path('livre_show', {'id': livre.id}) }}">show</a>
-                    <a href="{{ path('livre_edit', {'id': livre.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="8">no records found</td>
-            </tr>
-        {% endfor %}
+            {% for livre in livres %}
+                <tr>
+                    <td>{{ livre.id }}</td>
+                    <td>{{ livre.titre }}</td>
+                    <td>{{ livre.auteur }}</td>
+                    <td>{{ livre.editeur }}</td>
+                    <td>{{ livre.dateParution ? livre.dateParution|date('Y-m-d') : '' }}</td>
+                    <td>{{ livre.disponibilite ? 'Yes' : 'No' }}</td>
+                    <td>{{ livre.iban }}</td>
+                    <td>
+                        <!--<a href="{{ path('livre_show', {'id': livre.id}) }}">show</a>
+                                                                                                                    <a href="{{ path('livre_edit', {'id': livre.id}) }}">edit</a> -->
+                        <a href="{{ path('livre_show', { 'id': livre.id }) }}">show</a>
+                        <a href="{{ path('livre_edit', { 'id': livre.id }) }}">edit</a>
+                        {% set emp = false %}
+                        <a href="{{ path('emprunt', { 'id': livre.id }) }}">
+
+                            {% if livre.disponibilite == 1 %}
+                                {% for user in livre.users %}
+
+                                    {% for user1 in user %}
+                                        {% if user1.id == app.user.id %}
+                                            retourner
+                                            {% set emp = true %}
+                                        {% endif %}
+                                    {% endfor %}
+
+                                {% endfor %}
+
+                                {% if emp == false %}
+                                    emprunter
+                                {% endif %}
+                            {% endif %}
+
+                        </a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="8">no records found</td>
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
 

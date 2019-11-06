@@ -51,6 +51,12 @@ class Livre
      */
     private $iban;
 
+    /**
+     * @ORM\Column(type="array", options={"default":"a:0:{}"})
+     */
+
+    private $users = [] ;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -137,6 +143,24 @@ class Livre
     {
         $this->iban = $iban;
 
+        return $this;
+    }
+
+    public function getUsers(): ?array
+    {
+        $users[] = $this->users;
+        return $users;
+    }
+
+    public function addUser(User $user): self
+    {
+        $this->users[] = $user;
+        return $this;
+    }
+
+    public function removeUser($i): self
+    {
+        unset($this->users[$i]);
         return $this;
     }
 }

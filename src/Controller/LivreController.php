@@ -83,7 +83,7 @@ class LivreController extends AbstractController
      */
     public function delete(Request $request, Livre $livre): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$livre->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $livre->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($livre);
             $entityManager->flush();
@@ -91,27 +91,28 @@ class LivreController extends AbstractController
 
         return $this->redirectToRoute('livre_index');
     }
-        /**
-    * @Route("/{id}/emprunt", name="emprunt", methods={"GET"})
-    */
+
+    /**
+     * @Route("/{id}/emprunt", name="emprunt", methods={"GET"})
+     */
 
     public function emprunt(Livre $livre): Response
     {
-        $user1=$this->getUser();
-        $users=$livre->getUsers();
+        $user1 = $this->getUser();
+        $users = $livre->getUsers();
         $em = $this->getDoctrine()->getManager();
-        foreach ($users as $user){
-            if($user==$user1){
-                $livre->removeUser($user1);
-                $em->persist($livre);
-                $em->flush();
-                return $this->redirectToRoute('livre_index');
-            }
-    }
-        $livre->addUser($user1);
-        $em->persist($livre);
-        $em->flush();
-                return $this->redirectToRoute('livre_index');
+
+        if (\in_array($user1, $users[0])) {
+            $pos = array_search($user1, $users[0]);
+            $livre->removeUser($pos);
+            $em->persist($livre);
+            $em->flush();
+            return $this->redirectToRoute('livre_index');
+        } else {
+            $livre->addUser($user1);
+            $em->persist($livre);
+            $em->flush();
+            return $this->redirectToRoute('livre_index');
         }
-    
+    }
 }
