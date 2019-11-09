@@ -81,11 +81,11 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
-   if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
-       return new RedirectResponse($targetPath);
-    }
+        if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
+            return new RedirectResponse($targetPath);
+        }
 
-    RedirectResponse($this->urlGenerator->generate('index'));
+        return new RedirectResponse($this->urlGenerator->generate('livre_index'));
     }
 
     protected function getLoginUrl()
